@@ -22,6 +22,7 @@ pygame.display.set_caption("Snake Game")
 
 red = pygame.Color(255, 0, 0)
 green = pygame.Color(0, 255, 0)
+head = pygame.Color(255,0,255)
 black = pygame.Color(0, 0, 0)
 white = pygame.Color(255, 255, 255)
 brown = pygame.Color(165, 42, 42)
@@ -86,11 +87,11 @@ def drawBoard():
     snake_coord_x = snake_pos[0]*square_size
     snake_coord_y = snake_pos[1]*square_size
     #draw snake
-    pygame.draw.rect(playSurface, green, pygame.Rect(snake_coord_x, snake_coord_y,square_size,square_size))
+    pygame.draw.rect(playSurface, head, pygame.Rect(snake_coord_x, snake_coord_y,square_size,square_size))
 
     #snake body
     for i in snake_body:
-        pygame.draw.rect(playSurface, green, pygame.Rect(i[0]*square_size, i[1]*square_size,square_size,square_size))
+        pygame.draw.rect(playSurface, green, pygame.Rect(i[0]*square_size, i[1]*square_size,square_size-1,square_size-1))
 
 
     show_score()
@@ -169,7 +170,7 @@ def game_over():
 
 
 
-BOARD_CELL_NUMBER = 70
+BOARD_CELL_NUMBER = 40
 
 # print(width)
 
@@ -215,17 +216,22 @@ while True:
         snake_body.insert(0, list(snake_pos))
 
         grow_status = check_collisions(new_snake_pos, [food_pos] )
-
-        self_collision_status = check_collisions(new_snake_pos, snake_body[1:])
-
-        if self_collision_status == True:
-            print("BODY COLLISION")
-
         if (grow_status):
             food_pos = updateFoodPosition()
             score+=1
         else:
             snake_body.pop()
+
+
+
+        self_collision_status = check_collisions(new_snake_pos, snake_body[1::])
+
+        if self_collision_status == True:
+            Game_Over = True
+            game_over()
+            # print("BODY COLLISION")
+
+
         snake_pos = new_snake_pos
 
     #if game is still going

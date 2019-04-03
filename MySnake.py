@@ -81,6 +81,11 @@ def drawBoard():
     #draw snake
     pygame.draw.rect(playSurface, green, pygame.Rect(snake_coord_x, snake_coord_y,square_size,square_size))
 
+    #snake body
+    for i in snake_body:
+        pygame.draw.rect(playSurface, green, pygame.Rect(i[0]*square_size, i[1]*square_size,square_size,square_size))
+
+
     #updates canvas
     pygame.display.flip()
 
@@ -115,6 +120,11 @@ def check_collisions(new_position, collision_positions):
         if i:
             return i;
 
+def check_bounds(new_position):
+    if new_position[0] > BOARD_CELL_NUMBER or new_position[1] > BOARD_CELL_NUMBER or new_position[0] < 0 or new_position[1] < 0:
+        return True
+
+
 
 
 BOARD_CELL_NUMBER = 70
@@ -127,6 +137,7 @@ print(square_size)
 
 
 snake_pos = [10,10]
+snake_body = []
 direction = "RIGHT"
 
 board = init_board(BOARD_CELL_NUMBER);
@@ -140,15 +151,26 @@ while True:
     direction = handle_events()
 
     new_snake_pos = moveSnake(direction,snake_pos)
-    if new_snake_pos == snake_pos:
-        continue
+    if new_snake_pos != snake_pos:
 
 
-    grow_status = check_collisions(new_snake_pos, [food_pos] )
-    if (grow_status):
-        print("COLLISION")
 
-    snake_pos = new_snake_pos
+
+
+        bounds_status = check_bounds(new_snake_pos)
+        if bounds_status:
+            print("OUT OF BOUNDS")
+            #GAME OVER
+
+        snake_body.insert(0, list(snake_pos))
+
+        grow_status = check_collisions(new_snake_pos, [food_pos] )
+
+        if (grow_status):
+            food_pos = updateFoodPosition()
+        else:
+            snake_body.pop()
+        snake_pos = new_snake_pos
     drawBoard();
 
 

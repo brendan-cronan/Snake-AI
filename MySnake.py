@@ -45,7 +45,7 @@ TODO: make sure it spawns in a free space.
 """
 def updateFoodPosition():
     new_pos = [random.randint(0,len(board)),random.randint(0,len(board)) ]
-    print(new_pos)
+    # print(new_pos)
     return new_pos
 
 """
@@ -55,8 +55,15 @@ with only acceptable values being
 -1, 0, 1
 for indicating the direction in which to move.
 """
-def moveSnake(direction, current_pos):
+def moveSnake(facing, direction, current_pos):
     new_pos = [current_pos[0], current_pos[1]]
+
+    opposite_dir = [facing[0]*-1, facing[1]*-1]
+    # print(facing)
+
+    if direction == opposite_dir:
+        return new_pos
+
     #print(new_pos)
     new_pos[0] += direction[0]
     new_pos[1] += direction[1]
@@ -86,6 +93,8 @@ def drawBoard():
         pygame.draw.rect(playSurface, green, pygame.Rect(i[0]*square_size, i[1]*square_size,square_size,square_size))
 
 
+    show_score()
+
     #updates canvas
     pygame.display.flip()
 
@@ -101,16 +110,21 @@ def handle_events():
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 direction[0] = 1
+                direction[1] = 0
             if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                 direction[0] = -1
+                direction[1] = 0
             if event.key == pygame.K_UP or event.key == pygame.K_w:
                 direction[1] = -1
+                direction[0] = 0
             if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                 direction[1] = 1
+                direction[0] = 0
             if event.key == pygame.K_ESCAPE:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             if event.key == pygame.K_SPACE:
                 food_pos=updateFoodPosition()
+                print("SPACE")
     return direction
 
 
@@ -126,15 +140,47 @@ def check_bounds(new_position):
 
 
 
+def show_score(choice=1):
+    SFont = pygame.font.SysFont('monaco', 32)
+    Ssurf = SFont.render("Score  :  {0}".format(score), True, black)
+    Srect = Ssurf.get_rect()
+    if choice == 1:
+        Srect.midtop = (80, 10)
+    else:
+        Srect.midtop = (320, 100)
+    playSurface.blit(Ssurf, Srect)
+
+def game_over():
+    myFont = pygame.font.SysFont('monaco', 72)
+    GOsurf = myFont.render("Game Over", True, red)
+    GOrect = GOsurf.get_rect()
+    GOrect.midtop = (320, 25)
+    playSurface.blit(GOsurf, GOrect)
+    show_score(0)
+    pygame.display.flip()
+
+
+
+    #pygame.time.wait(5000)
+    #pygame.quit()
+    #sys.exit()
+
+
+
+
 
 BOARD_CELL_NUMBER = 70
 
-print(width)
+# print(width)
 
 square_size = width/(BOARD_CELL_NUMBER+1)
 
-print(square_size)
+# print(square_size)
 
+score = 1
+Game_Over = False
+
+facing = [0,0]
 
 snake_pos = [10,10]
 snake_body = []
@@ -150,42 +196,38 @@ food_pos = updateFoodPosition()
 while True:
     direction = handle_events()
 
-    new_snake_pos = moveSnake(direction,snake_pos)
+
+
+    new_snake_pos = moveSnake(facing, direction,snake_pos)
+
+    #if you have moved...
     if new_snake_pos != snake_pos:
 
-
-
+        facing = direction
 
 
         bounds_status = check_bounds(new_snake_pos)
         if bounds_status:
-            print("OUT OF BOUNDS")
-            #GAME OVER
+            # print("OUT OF BOUNDS")
+            Game_Over=True
+            game_over()
 
         snake_body.insert(0, list(snake_pos))
 
         grow_status = check_collisions(new_snake_pos, [food_pos] )
 
+        self_collision_status = check_collisions(new_snake_pos, snake_body[1:])
+
+        if self_collision_status == True:
+            print("BODY COLLISION")
+
         if (grow_status):
             food_pos = updateFoodPosition()
+            score+=1
         else:
             snake_body.pop()
         snake_pos = new_snake_pos
-    drawBoard();
 
-
-
-
-
-
-
-
-def showScore(choice=1):
-    SFont = pygame.font.SysFont('monaco', 32)
-    Ssurf = SFont.render("Score  :  {0}".format(score), True, black)
-    Srect = Ssurf.get_rect()
-    if choice == 1:
-        Srect.midtop = (80, 10)
-    else:
-        Srect.midtop = (320, 100)
-    playSurface.blit(Ssurf, Srect)
+    #if game is still going
+    if not Game_Over:
+        drawBoard()

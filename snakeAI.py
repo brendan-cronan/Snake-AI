@@ -4,12 +4,12 @@ import time
 import random
 import math
 
-import gym
-import numpy as np
-import tflearn.layers.core import input_layer, dropout, fully_connected
-from tflearn.layers.estimator import regression
-from statistics import mean, median
-from collections import Counter
+##import gym
+##import numpy as np
+## import tflearn.layers.core  input_layer, dropout, fully_connected
+##from tflearn.layers.estimator import regression
+##from statistics import mean, median
+##from collections import Counter
 
 LR = 1e-3
 goal_steps = 300
@@ -127,9 +127,9 @@ def handle_events():
         else:
                 #    elif event.type == pygame.KEYDOWN:
                 direction[0] = random.randrange(-1,2)
-                print(direction[0])
+#                print(direction[0])
                 direction[1] = random.randrange(-1,2)
-                print(direction[1])
+#                print(direction[1])
 #            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
 #                direction[0] = 1
 #                direction[1] = 0

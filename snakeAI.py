@@ -18,8 +18,6 @@ initial_games = 5000
 
 
 
-
-
 #pygame init
 init_status = pygame.init()
 if init_status[1] > 0:

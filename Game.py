@@ -283,9 +283,8 @@ class Game:
 
 
 
-    def get_observations(self, pos, dir):
+    def get_observations(self, pos):
         position = copy.deepcopy(pos)
-        direction = [1,0]
 
 
         wall = 0
@@ -316,41 +315,4 @@ class Game:
             for i in items:
                 temp = self.ortho_distance(self.snake.head, i)
                 observation_distance_list.append(temp)
-
-
-
-        """
-        observe_right = self.observe_line(position, Game.directions['Right'], wall, food, body ),
-        observe_left = self.observe_line(position, Game.directions['Left'], wall, food, body ),
-        observe_down  =  self.observe_line(position, Game.directions['Down'], wall, food, body ),
-        observe_up  =  self.observe_line(position, Game.directions['Up'], wall, food, body ),
-
-        observe_down_right =  self.observe_line(position, Game.directions['Down-Right'], wall, food, body ),
-        observe_up_right =  self.observe_line(position, Game.directions['Up-Right'], wall, food, body ),
-        observe_down_left  =  self.observe_line(position, Game.directions['Down-Left'], wall, food, body ),
-        observe_up_left =  self.observe_line(position, Game.directions['Up-Left'], wall, food, body )
-        """
-
-
-
-        dist_to_wall = 0
-        dist_to_food = 0
-        dist_to_body = 0
-
-
-
-"""
-directions = {
-"Right":        [1,0], # right
-"Left":         [-1,0], # left
-
-"Down":         [0,1], # down
-"Up":           [0,-1], # up
-
-"Down-Right":   [1,1], # down-right
-"Up-Right":     [1,-1], # up-right
-
-"Down-Left":    [-1,1], # down-left
-"Up-Left":      [-1,-1], # up-left
-}
-"""
+        return observation_distance_list

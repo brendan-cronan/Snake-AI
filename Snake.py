@@ -19,17 +19,17 @@ class Snake:
     """
     Executes the movement for the snake.  Updates position and facing.
     Also makes checks for facing and boundaries.
-
+    Return True if any movement was made.
+    Return "GAME_OVER" if the movement is out of bounds
     """
     def move(self, direction):
-        if not self.check_facing(direction):
+        if self.check_facing(direction):
             out_of_bounds = self.check_bounds(self.get_position_from_current(direction), BOARD_CELL_NUMBER)
-            if not out_of_bounds:
-                _move_snake(direction)
+            if out_of_bounds:
+                self._move_snake(direction)
+                return True
             else:
                 return "GAME_OVER"
-        else:
-            return False
 
 
 

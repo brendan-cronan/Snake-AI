@@ -37,6 +37,7 @@ class Game:
 
     def __init__(self):
         pygame.init()
+        self.reset()
 
     """
     Method to start a new game.
@@ -49,10 +50,47 @@ class Game:
         self.Game_Over = False
         self.board = self.init_board(Game.BOARD_CELL_NUMBER);
         #print(board)
-        self.food_pos = self.updateFoodPosition()
 
         self.snake = Snake()
+        self.food_pos = self.update_food_position()
 
+
+    """
+    Called from the main loop.
+    Handles most of the main mechanics.
+    """
+    def step(self, dir):
+
+
+        direction, input_recieved = self.handle_events();
+        if not input_recieved:
+            return
+
+        moved = self.snake.move(direction)
+        if moved:
+            print("moved")
+        if moved is None :
+            print('You did not move')
+        elif moved == "GAME_OVER":
+            self.Game_Over = True
+            self.game_over()
+
+
+        grow_status = self.check_collisions(self.snake.head, [self.food_pos] )
+        if grow_status:
+            self.food_pos = self.update_food_position()
+            self.score+=1
+            self.snake.grow()
+
+        #Check for collisions with the body of the snake.
+        self_collision_status = self.check_collisions(self.snake.head, self.snake.tail[1::])
+
+        if self_collision_status:
+            self.Game_Over = True
+            self.game_over()
+
+        if not self.Game_Over:
+            self.render()
 
 
 
@@ -75,30 +113,41 @@ class Game:
 
     TODO: make sure it spawns in a free space.
     """
-    def updateFoodPosition(self):
-        new_pos = [random.randint(0,len(self.board)),random.randint(0,len(self.board)) ]
-        # print(new_pos)
-        return new_pos
+    def update_food_position(self):
+
+        out = []
+        for i in range(Game.BOARD_CELL_NUMBER):
+            for j in range(Game.BOARD_CELL_NUMBER):
+                out.append([i,j])
+
+        out.remove(self.snake.head)
+        for pos in self.snake.tail:
+            out.remove(pos)
+
+        return random.choice(out)
+        
+        # new_pos = [random.randint(0,len(self.board)),random.randint(0,len(self.board)) ]
+        # return new_pos
 
     """
     Does all of the drawing to the canvas.
     """
     def render(self):
-        self.screen.fill(BACKGROUND_COLOR)
+        self.screen.fill(Game.BACKGROUND_COLOR)
         #draw food at location
-        pygame.draw.rect(self.screen, FOOD_COLOR, pygame.Rect(food_pos[0]*SQUARE_SIZE, food_pos[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+        pygame.draw.rect(self.screen, Game.FOOD_COLOR, pygame.Rect(self.food_pos[0]*Game.SQUARE_SIZE, self.food_pos[1]*Game.SQUARE_SIZE, Game.SQUARE_SIZE, Game.SQUARE_SIZE))
 
-        snake_coord_x = snake_pos[0]*SQUARE_SIZE
-        snake_coord_y = snake_pos[1]*SQUARE_SIZE
+        snake_coord_x = self.snake.head[0]*Game.SQUARE_SIZE
+        snake_coord_y = self.snake.head[1]*Game.SQUARE_SIZE
         #draw snake
-        pygame.draw.rect(self.screen, HEAD_COLOR, pygame.Rect(snake_coord_x, snake_coord_y,SQUARE_SIZE,SQUARE_SIZE))
+        pygame.draw.rect(self.screen, Game.HEAD_COLOR, pygame.Rect(snake_coord_x, snake_coord_y,Game.SQUARE_SIZE,Game.SQUARE_SIZE))
 
         #snake body
-        for i in snake_body:
-            pygame.draw.rect(self.screen, TAIL_COLOR, pygame.Rect(i[0]*SQUARE_SIZE, i[1]*SQUARE_SIZE,SQUARE_SIZE-1,SQUARE_SIZE-1))
+        for i in self.snake.tail:
+            pygame.draw.rect(self.screen, Game.TAIL_COLOR, pygame.Rect(i[0]*Game.SQUARE_SIZE, i[1]*Game.SQUARE_SIZE,Game.SQUARE_SIZE-1,Game.SQUARE_SIZE-1))
 
 
-        show_score()
+        self.show_score()
 
         #updates canvas
         pygame.display.flip()
@@ -107,6 +156,7 @@ class Game:
 
 
     def handle_events(self):
+        input_recieved = False
         direction = [0,0]
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -120,21 +170,24 @@ class Game:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                    direction[0] = 1
                    direction[1] = 0
+                   input_recieved = True
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                    direction[0] = -1
                    direction[1] = 0
+                   input_recieved = True
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
                    direction[1] = -1
                    direction[0] = 0
+                   input_recieved = True
                 if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                    direction[1] = 1
                    direction[0] = 0
+                   input_recieved = True
+                if event.key == pygame.K_SPACE:
+                    self.reset()
                 if event.key == pygame.K_ESCAPE:
                    pygame.event.post(pygame.event.Event(pygame.QUIT))
-                if event.key == pygame.K_SPACE:
-                   food_pos=updateFoodPosition()
-                   #print("SPACE")
-        return direction
+        return direction,input_recieved
 
 
 
@@ -167,36 +220,3 @@ class Game:
         self.screen.blit(GOsurf, GOrect)
         self.show_score(0)
         pygame.display.flip()
-
-
-
-    """
-    Called from the main loop.
-    Handles most of the main mechanics.
-    """
-    def step(self):
-        direction = self.handle_events();
-
-        moved = self.snake.move(direction)
-
-        if not moved:
-            print('You did not move')
-        elif moved == "GAME_OVER":
-            self.Game_Over = True
-            self.game_over()
-
-        grow_status = self.check_collisions(self.snake.head, [self.food_pos] )
-        if grow_status:
-            self.food_pos = self.updateFoodPosition()
-            self.score+=1
-            self.snake.grow()
-
-        #Check for collisions with the body of the snake.
-        self_collision_status = self.check_collisions(self.snake.head, self.snake.tail[1::])
-
-        if self_collision_status:
-            self.Game_Over = True
-            self.game_over()
-
-        if not self.Game_Over:
-            self.drawBoard()

@@ -4,4 +4,4 @@ instance = Game()
 instance.reset()
 
 while True:
-    observations = instance.step()
+    observations = instance.step([1,0])

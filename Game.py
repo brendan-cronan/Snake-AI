@@ -3,31 +3,37 @@ import sys
 import time
 import random
 import math
+from Snake import Snake
 
-
-SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 200, 200
-BOARD_CELL_NUMBER = 10
-
-SQUARE_SIZE = SCREEN_WIDTH/(BOARD_CELL_NUMBER+1)
-INITIAL_POSITION = [BOARD_CELL_NUMBER/2,BOARD_CELL_NUMBER/2]
-INITIAL_DIRECTION = "RIGHT"
-
-
-red = pygame.Color(255, 0, 0)
-green = pygame.Color(0, 255, 0)
-purple = pygame.Color(255,0,255)
-black = pygame.Color(0, 0, 0)
-white = pygame.Color(255, 255, 255)
-brown = pygame.Color(165, 42, 42)
-
-
-BACKGROUND_COLOR = white
-FOOD_COLOR = red
-TAIL_COLOR = green
-HEAD_COLOR = purple
 
 
 class Game:
+
+    BOARD_CELL_NUMBER = 10
+
+
+    SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 200, 200
+
+    SQUARE_SIZE = SCREEN_WIDTH/(BOARD_CELL_NUMBER+1)
+    INITIAL_POSITION = [BOARD_CELL_NUMBER/2,BOARD_CELL_NUMBER/2]
+    INITIAL_DIRECTION = "RIGHT"
+
+
+    red = pygame.Color(255, 0, 0)
+    green = pygame.Color(0, 255, 0)
+    purple = pygame.Color(255,0,255)
+    black = pygame.Color(0, 0, 0)
+    white = pygame.Color(255, 255, 255)
+    brown = pygame.Color(165, 42, 42)
+
+
+    BACKGROUND_COLOR = white
+    FOOD_COLOR = red
+    TAIL_COLOR = green
+    HEAD_COLOR = purple
+
+
+
 
     def __init__(self):
         pygame.init()
@@ -36,18 +42,21 @@ class Game:
     Method to start a new game.
     """
     def reset(self):
-        self.screen = pygame.display.set_mode(SCREENSIZE)
+        self.screen = pygame.display.set_mode(Game.SCREEN_SIZE)
         pygame.display.set_caption("Snake Game")
 
+        self.score = 0
+        self.Game_Over = False
+        self.board = self.init_board(Game.BOARD_CELL_NUMBER);
+        #print(board)
+        self.food_pos = self.updateFoodPosition()
 
-    """
-    Called from the main loop.
-    Handles most of the main mechanics.
-    """
-    def step(self):
-        direction = handle_events();
+        self.snake = Snake()
 
-        
+
+
+
+
 
 
     """
@@ -67,48 +76,26 @@ class Game:
     TODO: make sure it spawns in a free space.
     """
     def updateFoodPosition(self):
-        new_pos = [random.randint(0,len(board)),random.randint(0,len(board)) ]
+        new_pos = [random.randint(0,len(self.board)),random.randint(0,len(self.board)) ]
         # print(new_pos)
         return new_pos
-
-    """
-    Updates the Snake's position.
-    input: [left/right direction, up/down direction]
-    with only acceptable values being
-    -1, 0, 1
-    for indicating the direction in which to move.
-    """
-    def moveSnake(self, facing, direction, current_pos):
-        new_pos = [current_pos[0], current_pos[1]]
-
-        #Check if given direction of the opposite of the current facing.
-        if direction == [facing[0]*-1, facing[1]*-1]:
-            return new_pos
-
-        new_pos[0] += direction[0]
-        new_pos[1] += direction[1]
-
-        return new_pos
-
-
-
 
     """
     Does all of the drawing to the canvas.
     """
     def render(self):
-        playSurface.fill(BACKGROUND_COLOR)
+        self.screen.fill(BACKGROUND_COLOR)
         #draw food at location
-        pygame.draw.rect(playSurface, FOOD_COLOR, pygame.Rect(food_pos[0]*SQUARE_SIZE, food_pos[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+        pygame.draw.rect(self.screen, FOOD_COLOR, pygame.Rect(food_pos[0]*SQUARE_SIZE, food_pos[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
         snake_coord_x = snake_pos[0]*SQUARE_SIZE
         snake_coord_y = snake_pos[1]*SQUARE_SIZE
         #draw snake
-        pygame.draw.rect(playSurface, HEAD_COLOR, pygame.Rect(snake_coord_x, snake_coord_y,SQUARE_SIZE,SQUARE_SIZE))
+        pygame.draw.rect(self.screen, HEAD_COLOR, pygame.Rect(snake_coord_x, snake_coord_y,SQUARE_SIZE,SQUARE_SIZE))
 
         #snake body
         for i in snake_body:
-            pygame.draw.rect(playSurface, TAIL_COLOR, pygame.Rect(i[0]*SQUARE_SIZE, i[1]*SQUARE_SIZE,SQUARE_SIZE-1,SQUARE_SIZE-1))
+            pygame.draw.rect(self.screen, TAIL_COLOR, pygame.Rect(i[0]*SQUARE_SIZE, i[1]*SQUARE_SIZE,SQUARE_SIZE-1,SQUARE_SIZE-1))
 
 
         show_score()
@@ -151,95 +138,65 @@ class Game:
 
 
 
+    def check_collisions(self, position, collision_positions):
+        collisions = [ True for loc in collision_positions if position == loc ]
+        for flag in collisions:
+            if flag:
+                return flag;
 
 
 
 
 
 
-
-def check_collisions(new_position, collision_positions):
-    collisions = [ True for loc in collision_positions if new_position == loc ]
-    for i in collisions:
-        if i:
-            return i;
-
-
-
-
-def show_score(choice=1):
-    SFont = pygame.font.SysFont('monaco', 32)
-    Ssurf = SFont.render("Score  :  {0}".format(score), True, black)
-    Srect = Ssurf.get_rect()
-    if choice == 1:
-        Srect.midtop = (80, 10)
-    else:
-        Srect.midtop = (320, 100)
-    playSurface.blit(Ssurf, Srect)
-
-def game_over():
-    myFont = pygame.font.SysFont('monaco', 72)
-    GOsurf = myFont.render("Game Over", True, red)
-    GOrect = GOsurf.get_rect()
-    GOrect.midtop = (320, 25)
-    playSurface.blit(GOsurf, GOrect)
-    show_score(0)
-    pygame.display.flip()
-
-
-
-score = 0
-Game_Over = False
-
-facing = [0,0]
-
-snake_body = []
-
-board = init_board(BOARD_CELL_NUMBER);
-#print(board)
-food_pos = updateFoodPosition()
-
-
-
-
-while True:
-    direction = handle_events()
-
-    new_snake_pos = moveSnake(facing, direction,snake_pos)
-
-    #if you have moved...
-    if new_snake_pos != snake_pos:
-
-        facing = direction
-
-
-        bounds_status = check_bounds(new_snake_pos)
-        if bounds_status:
-            # print("OUT OF BOUNDS")
-            Game_Over=True
-            game_over()
-
-        snake_body.insert(0, list(snake_pos))
-
-        grow_status = check_collisions(new_snake_pos, [food_pos] )
-        if (grow_status):
-            food_pos = updateFoodPosition()
-            score+=1
+    def show_score(self,choice=1):
+        SFont = pygame.font.SysFont('monaco', 32)
+        Ssurf = SFont.render("Score  :  {0}".format(self.score), True, Game.black)
+        Srect = Ssurf.get_rect()
+        if choice == 1:
+            Srect.midtop = (80, 10)
         else:
-            snake_body.pop()
+            Srect.midtop = (320, 100)
+        self.screen.blit(Ssurf, Srect)
+
+    def game_over(self):
+        myFont = pygame.font.SysFont('monaco', 72)
+        GOsurf = myFont.render("Game Over", True, Game.red)
+        GOrect = GOsurf.get_rect()
+        GOrect.midtop = (320, 25)
+        self.screen.blit(GOsurf, GOrect)
+        self.show_score(0)
+        pygame.display.flip()
 
 
 
-        self_collision_status = check_collisions(new_snake_pos, snake_body[1::])
+    """
+    Called from the main loop.
+    Handles most of the main mechanics.
+    """
+    def step(self):
+        direction = self.handle_events();
 
-        if self_collision_status == True:
-            Game_Over = True
-            game_over()
-            # print("BODY COLLISION")
+        moved = self.snake.move(direction)
 
+        if not moved:
+            print('You did not move')
+        elif moved == "GAME_OVER":
+            self.Game_Over = True
+            self.game_over()
 
-        snake_pos = new_snake_pos
+        grow_status = self.check_collisions(self.snake.head, [self.food_pos] )
+        if grow_status:
+            self.food_pos = self.updateFoodPosition()
+            self.score+=1
+            self.snake.grow()
 
-    #if game is still going
-    if not Game_Over:
-        drawBoard()
+        #Check for collisions with the body of the snake.
+        self_collision_status = self.check_collisions(self.snake.head, self.snake.tail[1::])
+
+        if self_collision_status:
+            self.Game_Over = True
+            self.game_over()
+
+        if not self.Game_Over:
+            self.drawBoard()

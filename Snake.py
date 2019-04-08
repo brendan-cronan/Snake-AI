@@ -9,7 +9,7 @@ BOARD_CELL_NUMBER = 10
 
 class Snake:
     def __init__(self):
-        self.head = [5,5]
+        self.head = [BOARD_CELL_NUMBER/2,BOARD_CELL_NUMBER/2]
         self.tail = []
         self.facing = [0,0]
         self.growing=False
@@ -22,10 +22,12 @@ class Snake:
 
     """
     def move(self, direction):
-        if not check_facing(direction):
-            out_of_bounds = check_bounds(self.get_position_from_current(direction), BOARD_CELL_NUMBER)
+        if not self.check_facing(direction):
+            out_of_bounds = self.check_bounds(self.get_position_from_current(direction), BOARD_CELL_NUMBER)
             if not out_of_bounds:
                 _move_snake(direction)
+            else:
+                return "GAME_OVER"
         else:
             return False
 

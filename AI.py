@@ -1,4 +1,7 @@
-import Game as game
+from Game import Game
 
-instance = game()
+instance = Game()
 instance.reset()
+
+while True:
+    observations = instance.step()

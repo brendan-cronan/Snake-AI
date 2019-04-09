@@ -1,6 +1,7 @@
 #Sources and inspirations: 
-# https://tolotra.com/2018/02/23/tutorial-train-a-tensorflow-model-to-control-the-snake-game/#comment-3
+
 # Sentdex youtube video: https://www.youtube.com/watch?v=3zeg7H6cAJw
+# https://tolotra.com/2018/02/23/tutorial-train-a-tensorflow-model-to-control-the-snake-game/#comment-3
 
 #modified to fit our self-created observations/input layer and snake game.
 

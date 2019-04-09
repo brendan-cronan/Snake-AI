@@ -9,8 +9,11 @@ Brendan Cronan and Michael Weir
 -------Package install's needed----------------------------------------------------------------------------------
 
 pip install pygame
+
 pip install numpy
+
 pip install tensorflow
+
 pip install tflearn
 
 

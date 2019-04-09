@@ -83,20 +83,13 @@ class Game:
         #            return
         
         moved = self.snake.move(direction)
-<<<<<<< HEAD
+        
         if moved:
             self.reward = 1
         #   print("moved")
         #  if moved is None :
         #   print('You did not move')
-=======
-        # if moved:
-            # print("moved")
-        if moved is None :
-            # print('You did not move')
-            self.get_observations(self.snake.head, direction)
 
->>>>>>> 914d8a9b80434a1213aea6223abc206c1b04fbf9
         elif moved == "GAME_OVER":
             self.Game_Over = True
             self.game_over()
@@ -248,7 +241,6 @@ class Game:
         if pos2 == 0 :
             return 0
 
-<<<<<<< HEAD
         x1 = pos1[0]
         y1 = pos1[1]
 
@@ -256,9 +248,6 @@ class Game:
         y2 = pos2[1]
 
         return max(x2 - x1, y2 - y1)
-=======
-        return [pos2[0] - pos1[0], pos2[1] - pos1[1]]
->>>>>>> 914d8a9b80434a1213aea6223abc206c1b04fbf9
 
 
 
@@ -302,15 +291,8 @@ class Game:
 
 
 
-
-<<<<<<< HEAD
     def getObservation(self, pos):
         position = copy.deepcopy(pos)
-
-=======
-    def get_observations(self, pos):
-        position = copy.deepcopy(pos)
->>>>>>> 914d8a9b80434a1213aea6223abc206c1b04fbf9
 
         wall = 0
         food = 0
@@ -338,43 +320,3 @@ class Game:
                 temp = self.ortho_distance(self.snake.head, i)
                 observation_distance_list.append(temp)
         return observation_distance_list
-<<<<<<< HEAD
-
-
-        """
-        observe_right = self.observe_line(position, Game.directions['Right'], wall, food, body ),
-        observe_left = self.observe_line(position, Game.directions['Left'], wall, food, body ),
-        observe_down  =  self.observe_line(position, Game.directions['Down'], wall, food, body ),
-        observe_up  =  self.observe_line(position, Game.directions['Up'], wall, food, body ),
-
-        observe_down_right =  self.observe_line(position, Game.directions['Down-Right'], wall, food, body ),
-        observe_up_right =  self.observe_line(position, Game.directions['Up-Right'], wall, food, body ),
-        observe_down_left  =  self.observe_line(position, Game.directions['Down-Left'], wall, food, body ),
-        observe_up_left =  self.observe_line(position, Game.directions['Up-Left'], wall, food, body )
-        """
-
-
-
-        dist_to_wall = 0
-        dist_to_food = 0
-        dist_to_body = 0
-
-
-
-"""
-directions = {
-"Right":        [1,0], # right
-"Left":         [-1,0], # left
-
-"Down":         [0,1], # down
-"Up":           [0,-1], # up
-
-"Down-Right":   [1,1], # down-right
-"Up-Right":     [1,-1], # up-right
-
-"Down-Left":    [-1,1], # down-left
-"Up-Left":      [-1,-1], # up-left
-}
-"""
-=======
->>>>>>> 914d8a9b80434a1213aea6223abc206c1b04fbf9

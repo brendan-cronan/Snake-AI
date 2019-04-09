@@ -144,6 +144,7 @@ def generate_population(model):
     return training_data
 
 #creating an initial model.
+#This shapes the model to fit the neural network and then returns the model.
 def create_initial_model(training_data):
     shape_second_parameter = len(training_data[0][0])
     x = np.array([i[0] for i in training_data])
@@ -154,6 +155,7 @@ def create_initial_model(training_data):
     return model
 
 #creates the neural network model.
+#introduces the input data to the network, creates layers to the model.
 def create_neural_network_model(input_size, output_size):
     network = input_data(shape=[None, input_size, 1], name='input')
     network = tflearn.fully_connected(network, 32)
@@ -165,6 +167,9 @@ def create_neural_network_model(input_size, output_size):
     return model
 
 #trains the model off of the first dataset.
+#training data contains observations and the output. Reshapes this data into the feature set X.
+# The y data is the same but instead of i[0] data it is the i[1] data.
+
 def train_model(training_data, model=False):
     shape_second_parameter = len(training_data[0][0])
     x = np.array([i[0] for i in training_data])
@@ -180,6 +185,7 @@ def train_model(training_data, model=False):
 
 
 #evaluates the model on how well it peformed.
+#For each game (10) , loops through frames and creates the actions off of the previous observations.
 def evaluate(model):
   
     scores = []

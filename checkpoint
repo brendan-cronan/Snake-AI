@@ -1,0 +1,2 @@
+model_checkpoint_path: "/Users/macosuser/Desktop/Snake-AI/snake_trained.tflearn"
+all_model_checkpoint_paths: "/Users/macosuser/Desktop/Snake-AI/snake_trained.tflearn"

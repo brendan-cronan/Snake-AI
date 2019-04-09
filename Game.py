@@ -61,40 +61,56 @@ class Game:
     Handles most of the main mechanics.
     """
     def step(self, dir):
-
-
-        direction, input_recieved = self.handle_events();
-        if not input_recieved:
-            return
-
+        
+        #    direction, input_recieved = self.handle_events();
+        direction = dir;
+        #   print(direction)
+        
+        if direction == 0:
+            direction = [-1,0]
+        
+        if direction == 1:
+            direction = [0,-1]
+        
+        if direction == 2:
+            direction = [1,0]
+        
+        if direction == 3:
+            direction = [0,1]
+        
+        
+        #        if not input_recieved:
+        #            return
+        
         moved = self.snake.move(direction)
         if moved:
-            print("moved")
-        if moved is None :
-            print('You did not move')
-            self.get_observations(self.snake.head, direction)
-
+            self.reward = 1
+        #   print("moved")
+        #  if moved is None :
+        #   print('You did not move')
         elif moved == "GAME_OVER":
             self.Game_Over = True
             self.game_over()
-
-
+        
+        
         grow_status = self.check_collisions(self.snake.head, [self.food_pos] )
         if grow_status:
             self.food_pos = self.update_food_position()
             self.score+=1
+            self.reward=100
             self.snake.grow()
-
+        
         #Check for collisions with the body of the snake.
         self_collision_status = self.check_collisions(self.snake.head, self.snake.tail[1::])
-
+        
         if self_collision_status:
             self.Game_Over = True
             self.game_over()
+        
+        #      return self.reward, self.Game_Over, self.score
+        
+        return self.getObservation(self.snake.head), self.reward, self.Game_Over, self.score
 
-
-        if not self.Game_Over:
-            self.render()
 
 
 
@@ -238,7 +254,7 @@ class Game:
         x2 = pos2[0]
         y2 = pos2[1]
 
-        return [x2- x1, y2 - y1]
+        return max(x2 - x1, y2 - y1)
 
 
 
@@ -283,9 +299,8 @@ class Game:
 
 
 
-    def get_observations(self, pos, dir):
+    def getObservation(self, pos):
         position = copy.deepcopy(pos)
-        direction = [1,0]
 
 
         wall = 0
@@ -316,7 +331,7 @@ class Game:
             for i in items:
                 temp = self.ortho_distance(self.snake.head, i)
                 observation_distance_list.append(temp)
-
+        return observation_distance_list
 
 
         """

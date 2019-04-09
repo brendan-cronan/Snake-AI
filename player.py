@@ -1,19 +1,23 @@
+#Sources and inspirations: https://tolotra.com/2018/02/23/tutorial-train-a-tensorflow-model-to-control-the-snake-game/#comment-3
+# Sentdex youtube video: https://www.youtube.com/watch?v=3zeg7H6cAJw
+#modified to fit our self-created observations/input layer and snake game.
+
+
 from Game import Game as game
 import pygame
 from pygame.locals import *
-env = game()
-env.reset()
-action = -1
 import random
-
-goal_steps = 300
 import tflearn
 from tflearn.layers.core import input_data, dropout, fully_connected
 from tflearn.layers.estimator import regression
 from statistics import median, mean
 from collections import Counter
 import numpy as np
-
+#env creating the game instance,
+env = game()
+env.reset()
+goal_steps = 300
+action = -1
 LR = 1e-3
 goal_steps = 300
 score_requirement = 50

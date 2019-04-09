@@ -216,7 +216,7 @@ def evaluate(model):
         scores.append(score)
 #     print('Average Score is')
 #     print('Average Score:', sum(scores) / len(scores))
-     print('choice 1:{}  choice 0:{}'.format(choices.count(1) / len(choices), choices.count(0) / len(choices)))
+    print('choice 1:{}  choice 0:{}'.format(choices.count(1) / len(choices), choices.count(0) / len(choices)))
     print('Score Requirement:', score_requirement)
 
 #main method to call each function.

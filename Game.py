@@ -83,11 +83,20 @@ class Game:
         #            return
         
         moved = self.snake.move(direction)
+<<<<<<< HEAD
         if moved:
             self.reward = 1
         #   print("moved")
         #  if moved is None :
         #   print('You did not move')
+=======
+        # if moved:
+            # print("moved")
+        if moved is None :
+            # print('You did not move')
+            self.get_observations(self.snake.head, direction)
+
+>>>>>>> 914d8a9b80434a1213aea6223abc206c1b04fbf9
         elif moved == "GAME_OVER":
             self.Game_Over = True
             self.game_over()
@@ -130,8 +139,6 @@ class Game:
 
     """
     Changes the food postion to a new random space.
-
-    TODO: make sure it spawns in a free space.
     """
     def update_food_position(self):
 
@@ -146,9 +153,6 @@ class Game:
                 out.remove(pos)
 
         return random.choice(out)
-
-        # new_pos = [random.randint(0,len(self.board)),random.randint(0,len(self.board)) ]
-        # return new_pos
 
     """
     Does all of the drawing to the canvas.
@@ -219,10 +223,6 @@ class Game:
                 return flag;
 
 
-
-
-
-
     def show_score(self,choice=1):
         SFont = pygame.font.SysFont('monaco', 32)
         Ssurf = SFont.render("Score  :  {0}".format(self.score), True, Game.black)
@@ -234,20 +234,21 @@ class Game:
         self.screen.blit(Ssurf, Srect)
 
     def game_over(self):
-        myFont = pygame.font.SysFont('monaco', 72)
-        GOsurf = myFont.render("Game Over", True, Game.red)
-        GOrect = GOsurf.get_rect()
-        GOrect.midtop = (320, 25)
-        self.screen.blit(GOsurf, GOrect)
-        self.show_score(0)
+        # myFont = pygame.font.SysFont('monaco', 72)
+        # GOsurf = myFont.render("Game Over", True, Game.red)
+        # GOrect = GOsurf.get_rect()
+        # GOrect.midtop = (320, 25)
+        # self.screen.blit(GOsurf, GOrect)
+        # self.show_score(0)
         pygame.display.flip()
         self.reset()
 
 
     def ortho_distance(self, pos1, pos2):
-        if pos2 == None or pos2 == 0 :
+        if pos2 == 0 :
             return 0
 
+<<<<<<< HEAD
         x1 = pos1[0]
         y1 = pos1[1]
 
@@ -255,6 +256,9 @@ class Game:
         y2 = pos2[1]
 
         return max(x2 - x1, y2 - y1)
+=======
+        return [pos2[0] - pos1[0], pos2[1] - pos1[1]]
+>>>>>>> 914d8a9b80434a1213aea6223abc206c1b04fbf9
 
 
 
@@ -299,15 +303,19 @@ class Game:
 
 
 
+<<<<<<< HEAD
     def getObservation(self, pos):
         position = copy.deepcopy(pos)
 
+=======
+    def get_observations(self, pos):
+        position = copy.deepcopy(pos)
+>>>>>>> 914d8a9b80434a1213aea6223abc206c1b04fbf9
 
         wall = 0
         food = 0
         body = 0
 
-        # wall, food, body = observe_right = self.observe_line(position, direction, wall, food, body )
 
         observation_list = []
 
@@ -323,15 +331,14 @@ class Game:
         self.observe_line(position, Game.directions['Up-Left'], wall, food, body )
         ]
 
-
         observation_distance_list = []
-
 
         for items in observation_list:
             for i in items:
                 temp = self.ortho_distance(self.snake.head, i)
                 observation_distance_list.append(temp)
         return observation_distance_list
+<<<<<<< HEAD
 
 
         """
@@ -369,3 +376,5 @@ directions = {
 "Up-Left":      [-1,-1], # up-left
 }
 """
+=======
+>>>>>>> 914d8a9b80434a1213aea6223abc206c1b04fbf9

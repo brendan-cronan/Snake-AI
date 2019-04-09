@@ -3,7 +3,7 @@ CIS 365 AI Project 3
 
 Brendan Cronan and Michael Weir
 
-###Package install's needed:
+-------Package install's needed-----------
 
 pip install pygame
 pip install numpy
@@ -11,12 +11,12 @@ pip install tensorflow
 pip install tflearn
 
 
-###To run original snake game:
+----------To run original snake game----------
 
 Run the command: python Old_Snake.py
 
 
-###To run the AI:
+------------To run the AI-----------------
 
 Directory must include Snake.py, player.py, and Game.py.
 

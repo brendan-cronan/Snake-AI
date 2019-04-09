@@ -13,15 +13,31 @@ from tflearn.layers.estimator import regression
 from statistics import median, mean
 from collections import Counter
 import numpy as np
-#env creating the game instance,
+
+#env creating the game instance and a reset.
 env = game()
 env.reset()
-goal_steps = 300
+
+
+#setting initial value for action.
 action = -1
+
+#learning rate
 LR = 1e-3
+
+#goal steps for the snake game.
 goal_steps = 300
+
+#score requirement for the initial dataset, goes up with the mean of new data.
 score_requirement = 50
+
+#games to be played for each generation.
 initial_games = 500
+
+
+#generates 10 random games to create an initial dataset for the first model to learn from.
+#chooses random locations based on a random number generator which translates into moves in the Game.py.
+# env.render to display these games.
 
 def some_random_games_first():
 
@@ -46,8 +62,12 @@ def some_random_games_first():
             a = 0
             if done: break
 
+# generates the initial population for the training data.
 
 def generate_population(model):
+    
+    #store all data that meets the score_requirement as well as other scores and iterates through the games.
+    #stores previous observation attached to an action.
   
     global score_requirement
 
@@ -80,7 +100,7 @@ def generate_population(model):
                     prediction = model.predict(prev_observation.reshape(-1, len(prev_observation), 1))
                     action = np.argmax(prediction[0])
 
-        
+#performs the action from the prediction.        
             observation, reward, done, info = env.step(action)
 
        
@@ -89,6 +109,8 @@ def generate_population(model):
             prev_observation = observation
             score += reward
             if done: break
+                
+ #if the score meets or exceeds the requirement, we save the data into a one-hot output layer.
 
         if score >= score_requirement:
             accepted_scores.append(score)
@@ -105,6 +127,7 @@ def generate_population(model):
  
         scores.append(score)
 
+#shows stats from the data set.
 
     print('Average accepted score:', mean(accepted_scores))
     print('Score Requirement:', score_requirement)
@@ -112,13 +135,13 @@ def generate_population(model):
     print(Counter(accepted_scores))
     score_requirement = mean(accepted_scores)
 
-
+#saves the training data into an .npy file.
     training_data_save = np.array([training_data, score_requirement])
     np.save('saved.npy', training_data_save)
 
     return training_data
 
-
+#creating an initial model.
 def create_initial_model(training_data):
     shape_second_parameter = len(training_data[0][0])
     x = np.array([i[0] for i in training_data])
@@ -128,7 +151,7 @@ def create_initial_model(training_data):
 
     return model
 
-
+#creates the neural network model.
 def create_neural_network_model(input_size, output_size):
     network = input_data(shape=[None, input_size, 1], name='input')
     network = tflearn.fully_connected(network, 32)
@@ -139,7 +162,7 @@ def create_neural_network_model(input_size, output_size):
 
     return model
 
-
+#trains the model off of the first dataset.
 def train_model(training_data, model=False):
     shape_second_parameter = len(training_data[0][0])
     x = np.array([i[0] for i in training_data])
@@ -154,7 +177,7 @@ def train_model(training_data, model=False):
     return model
 
 
-
+#evaluates the model on how well it peformed.
 def evaluate(model):
   
     scores = []
@@ -187,7 +210,7 @@ def evaluate(model):
      print('choice 1:{}  choice 0:{}'.format(choices.count(1) / len(choices), choices.count(0) / len(choices)))
     print('Score Requirement:', score_requirement)
 
-
+#main method to call each function.
 if __name__ == "__main__":
     
     
@@ -201,7 +224,7 @@ if __name__ == "__main__":
     # evaluating
     evaluate(model)
 
-    #     recursive learning
+    #     recursive learning, each generation the score requirement increases with the average score threshold.     
     generation = 1
     while generation < 3:
         generation += 1

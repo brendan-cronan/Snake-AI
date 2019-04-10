@@ -220,7 +220,7 @@ class Game:
     """
     def check_collisions(self, position, collision_positions):
         #list comprehension to make a True value if the provided position is equal to any value in loc.
-        collisions = [ 1 for loc in collision_positions if new_position == loc ]
+        collisions = [ 1 for loc in collision_positions if position == loc ]
         if 1 in collisions:#loop through and return True if any 1 values are present
             return True
 
